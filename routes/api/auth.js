@@ -23,13 +23,16 @@ module.exports = router ;
 
 
 router.post('/',[
-    check('email', 'please include a v alid email').isEmail(),
-    check('password', 'password is required').exists()
+    check('email', 'Please enter a valid email address').isEmail(),
+    check('password', 'Password is required').not().isEmpty()
 
 ],
 async(req,res)=> {
-    // console.log(req.body);
+    // console.log("bulls eye");
+    // console.log(req.body.email);
+    
     const errors = validationResult(req);
+    console.log(errors);
     if (!errors.isEmpty()){
         
         return res.status(400).json({errors : errors.array()});
@@ -41,13 +44,15 @@ async(req,res)=> {
         let user = await User.findOne({email});
         //see if user exists 
         if (!user){
-           return  res.status(400).json({errors :[{msg : 'invalid credentials'}]});
-         }
+            // consosle.log("reached");
+        //    return  res.status(400).json({errors :[{msg : 'invalid credentials'}]});
+            return res.status(400).json({errors: [{msg:'Invalid Credentials'}]});
+    }
 
          //check if the password matches
          const result = await bcrypt.compare(password , user.password)
          if(!result) {
-             return res.status(400).json({error: [{msg:'invalid credentials'}]});
+             return res.status(400).json({errors: [{msg:'Invalid Credentials'}]});
          }
 
         //return jsonwebtoken
