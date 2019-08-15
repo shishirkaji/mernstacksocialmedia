@@ -307,35 +307,31 @@ router.delete("/education/:eduId", auth, async (req, res) => {
   }
 });
 
-
 //@route Get api/profile/github/:username
 //@access Public
 //@desc get user repos
-router.get('/github/:username',(req, res)=>{
-  try{
+router.get("/github/:username", (req, res) => {
+  try {
     const options = {
-      uri : `https://api.github.com/users/${req.params.username}/repos?per_page=5&
-      sort=created:asc&client_id=${config.get('githubClientId')}&
-      client_secret = ${config.get('githubSecret')}`,
-      method :'GET',
-      headers:{'user-agent':'node.js'}
+      uri: `https://api.github.com/users/${
+        req.params.username
+      }/repos?per_page=5&
+      sort=created:asc&client_id=${config.get("githubClientId")}&
+      client_secret = ${config.get("githubSecret")}`,
+      method: "GET",
+      headers: { "user-agent": "node.js" }
     };
-    request(options,(error,response, body)=>{
-      if(error) console.log(error);
-      if(response.statusCode!==200){
-        return res.status(404).json({msg:'No Github profile found'});
-      } 
-    
+    request(options, (error, response, body) => {
+      if (error) console.log(error);
+      if (response.statusCode !== 200) {
+        return res.status(404).json({ msg: "No Github profile found" });
+      }
 
-    res.json(JSON.parse(body))
-  });
-  
-  }
-  
-  catch(err){
+      res.json(JSON.parse(body));
+    });
+  } catch (err) {
     console.log(err.message);
     res.status(500).send("server error");
-
   }
 });
 
